@@ -58,6 +58,9 @@ class _SearchBarAppState extends State<SearchBarApp> {
 
 // Récupérer le code région
   String getRegionCode(value) {
+    // widget. permet de capter une variable dans la class de référence
+
+    print("Submitting $value");
     return widget.config.get("regions.$value.code");
   }
 
@@ -94,8 +97,13 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onSubmitted: (value) {
-                    print("Submitting $value");
-                    getRegionCode(value);
+                    print(getRegionCode(value));
+                     Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          DepartementsPage(regionName: value, regionCode: getRegionCode(value))));
+                    
                   },
                   onChanged: (value) {
                     search(value);
@@ -180,11 +188,6 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           return GestureDetector(
                             onTapDown: (detail) {
                               updateSearchQuery(searchresults[index]);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const DepartementsPage()));
                             },
                             child: Container(
                               decoration: const BoxDecoration(

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_examen1/models/departement.dart';
+import 'package:flutter_examen1/pages/communes_page.dart';
 import 'package:flutter_examen1/services/departementService.dart';
 
 class DepartementLister extends StatefulWidget {
-  const DepartementLister({super.key});
+  const DepartementLister(
+      {super.key, required this.regionCode, required this.regionName});
+
+  final String regionCode;
+  final String regionName;
 
   @override
   State<DepartementLister> createState() => _DepartementListerState();
@@ -20,7 +25,7 @@ class _DepartementListerState extends State<DepartementLister> {
 
   void loadDepartements() {
     setState(() {
-      departements = DepartementService.getDepartements();
+      departements = DepartementService.getDepartements(widget.regionCode);
     });
   }
 
@@ -38,21 +43,29 @@ class _DepartementListerState extends State<DepartementLister> {
                   Departement departement = departements[index];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      // You can customize Card properties here
-                      child: ListTile(
-                        title: Text(departement.nom),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(departement.code),
-                            Text('\$${departement.codeRegion}'),
-                          ],
+                    child: GestureDetector(
+                      onTapDown: (details) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CommunePage()));
+                      },
+                      child: Card(
+                        // You can customize Card properties here
+                        child: ListTile(
+                          title: Text(departement.nom),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(departement.code),
+                              Text('\$${departement.codeRegion}'),
+                            ],
+                          ),
+                          // You can handle onTap here
+                          onTap: () {
+                            // Add your onTap logic
+                          },
                         ),
-                        // You can handle onTap here
-                        onTap: () {
-                          // Add your onTap logic
-                        },
                       ),
                     ),
                   );

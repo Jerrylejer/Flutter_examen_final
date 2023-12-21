@@ -4,10 +4,10 @@ import 'package:flutter_examen1/models/departement.dart';
 import 'package:http/http.dart' as http;
 
 class DepartementService {
-  // Pour le navigateur
-  static String apiUrl = "https://geo.api.gouv.fr/regions/84/departements";
+  // Pour le navigateur 
 
-  static Future<DepartementsList?> getDepartements() async {
+  static Future<DepartementsList?> getDepartements(String regionCode) async {
+    String apiUrl = "https://geo.api.gouv.fr/regions/$regionCode/departements";
     try {
       final response = await http
           .get(Uri.parse(apiUrl), headers: {"Accept": "application/json"});
