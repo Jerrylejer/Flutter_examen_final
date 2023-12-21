@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_examen1/components/config.dart';
+import 'package:flutter_examen1/pages/departements_page.dart';
 import 'package:yaml/yaml.dart';
 
 class SearchBarApp extends StatefulWidget {
@@ -89,8 +90,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onSubmitted: (value) {
                     // print("Submitting $value");
-                    print(value);
-                    // searchBarHasFocus.requestFocus();
+                    // print(value);
+
                   },
                   onChanged: (value) {
                     search(value);
@@ -175,6 +176,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                           return GestureDetector(
                             onTapDown: (detail) {
                               updateSearchQuery(searchresults[index]);
+                                                  Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const DepartementsPage()));
                             },
                             child: Container(
                               decoration: const BoxDecoration(
