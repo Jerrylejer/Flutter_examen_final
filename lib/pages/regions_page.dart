@@ -43,9 +43,6 @@ class RegionPage extends StatelessWidget {
             ),
           ],
         )
-      
-      
-      
     );
   }
 }
