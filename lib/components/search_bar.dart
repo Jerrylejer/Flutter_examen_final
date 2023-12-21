@@ -11,9 +11,7 @@ class SearchBarApp extends StatefulWidget {
   State<SearchBarApp> createState() => _SearchBarAppState();
 }
 
-
 class _SearchBarAppState extends State<SearchBarApp> {
-
   String _query = '';
   List<String> filteredItems = [];
   List<String> searchresults = [];
@@ -33,13 +31,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
     super.initState();
   }
 
-
   void search(String query) {
     setState(
       () {
         _query = query;
 
-        filteredItems  = searchresults
+        filteredItems = searchresults
             .where(
               (item) => item.toLowerCase().contains(
                     query.toLowerCase(),
@@ -52,12 +49,15 @@ class _SearchBarAppState extends State<SearchBarApp> {
 
   void updateSearchQuery(value) {
     _searchController.text = value;
+    // Garder le focus à l'update de la demande de recherche
+    searchBarHasFocus.requestFocus();
+    // Callback de "search" qui prend la valeur de la recherche
+    search(value);
   }
-  
 
   void setRegions(YamlMap regions) {
-    if(searchresults.isEmpty) {
-      for(var region in regions.values) {
+    if (searchresults.isEmpty) {
+      for (var region in regions.values) {
         // print(region["nom"]);
         setState(() {
           searchresults.add(region["nom"]);
@@ -70,10 +70,10 @@ class _SearchBarAppState extends State<SearchBarApp> {
   Widget build(BuildContext context) {
     //on récupere la liste des régions dans le yaml de config
     // si la liste des regions est vide alors on la rempli.
-    if(searchresults.isEmpty) {
-        setRegions(widget.config.get("regions"));
+    if (searchresults.isEmpty) {
+      setRegions(widget.config.get("regions"));
     }
-    
+
     return Column(
       children: <Widget>[
         Row(
@@ -90,6 +90,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   onSubmitted: (value) {
                     // print("Submitting $value");
                     print(value);
+                    // searchBarHasFocus.requestFocus();
                   },
                   onChanged: (value) {
                     search(value);
@@ -98,110 +99,102 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   leading: const Icon(
                     Icons.search,
                     color: Color.fromARGB(255, 39, 108, 228),
-                    size: 18,),
-                  
+                    size: 18,
+                  ),
                 ),
               ),
             ),
           ],
-        ), 
-      
+        ),
         Visibility(
-          visible: sbHasFocus,
-          maintainSize: false,
-          child: Flexible(
-            child: 
-              (filteredItems.isNotEmpty || _query.isNotEmpty) 
-            ?
-
-              filteredItems.isEmpty 
-
-            ? 
-            Container(
-              width: 400,
-              decoration:  const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                ),
-                color: Color.fromARGB(37, 4, 160, 232),
-              ),
-              child: const Center(
-                child: Text(
-                  'No Results Found',
-                  style: TextStyle(fontSize: 18),
-                ),
-              )
-            )
-            
-            :
-
-            Container(
-              width: 400,
-              decoration:  const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                ),
-                color: Color.fromARGB(37, 4, 160, 232),
-              ),
-              child: ListView.builder(
-                itemCount: filteredItems.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTapDown: (detail) {
-                      updateSearchQuery(filteredItems[index]);
-                    },
-                    child: Container(
-                      decoration:  const BoxDecoration(
-                        border: Border( // Bordure supérieure
-                          bottom: BorderSide(width: 1.0, color: Colors.white), // Bordure inférieure
+            visible: sbHasFocus,
+            maintainSize: false,
+            child: Flexible(
+              child: (filteredItems.isNotEmpty || _query.isNotEmpty)
+                  ? filteredItems.isEmpty
+                      ? Container(
+                          width: 400,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20.0),
+                              bottomRight: Radius.circular(20.0),
+                            ),
+                            color: Color.fromARGB(37, 4, 160, 232),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'No Results Found',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ))
+                      : Container(
+                          width: 400,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20.0),
+                              bottomRight: Radius.circular(20.0),
+                            ),
+                            color: Color.fromARGB(37, 4, 160, 232),
+                          ),
+                          child: ListView.builder(
+                            itemCount: filteredItems.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTapDown: (detail) {
+                                  updateSearchQuery(filteredItems[index]);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      // Bordure supérieure
+                                      bottom: BorderSide(
+                                          width: 1.0,
+                                          color: Colors
+                                              .white), // Bordure inférieure
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(filteredItems[index]),
+                                  ),
+                                ),
+                              );
+                            },
+                          ))
+                  : Container(
+                      width: 400,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20.0),
+                          bottomRight: Radius.circular(20.0),
                         ),
+                        color: Color.fromARGB(37, 4, 160, 232),
                       ),
-                      child: ListTile(
-                        title: Text(filteredItems[index]),
-                      ),
-                    ),
-                  );
-                },
-              )
-            )
-            
-            :
-
-            Container(
-              width: 400,
-              decoration:  const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                ),
-                color: Color.fromARGB(37, 4, 160, 232),
-              ),
-              child: ListView.builder(
-                itemCount: searchresults.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTapDown: (detail) {
-                      updateSearchQuery(searchresults[index]);
-                    },
-                    child: Container(
-                      decoration:  const BoxDecoration(
-                        border: Border( // Bordure supérieure
-                          bottom: BorderSide(width: 1.0, color: Colors.white), // Bordure inférieure
-                        ),
-                      ),
-                      child: ListTile(
-                        title: Text(searchresults[index]),
-                      ),
-                    ),
-                  );
-                },
-              )
-            ),
-          )
-        )
+                      child: ListView.builder(
+                        itemCount: searchresults.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTapDown: (detail) {
+                              updateSearchQuery(searchresults[index]);
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  // Bordure supérieure
+                                  bottom: BorderSide(
+                                      width: 1.0,
+                                      color:
+                                          Colors.white), // Bordure inférieure
+                                ),
+                              ),
+                              child: ListTile(
+                                title: Text(searchresults[index]),
+                              ),
+                            ),
+                          );
+                        },
+                      )),
+            ))
       ],
-    );    
+    );
   }
 }
