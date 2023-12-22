@@ -46,12 +46,16 @@ class _DepartementListerState extends State<DepartementLister> {
                     child: GestureDetector(
                       onTapDown: (details) {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CommunePage()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CommunePage(
+                              regionCode: widget.regionCode,
+                              selectedCommune: departement,
+                            ),
+                          ),
+                        );
                       },
                       child: Card(
-                        // You can customize Card properties here
                         child: ListTile(
                           title: Text(departement.nom),
                           subtitle: Column(
@@ -61,15 +65,14 @@ class _DepartementListerState extends State<DepartementLister> {
                               Text('\$${departement.codeRegion}'),
                             ],
                           ),
-                          // You can handle onTap here
                           onTap: () {
-                            // Add your onTap logic
                           },
                         ),
                       ),
                     ),
                   );
                 });
+                
             // la requete a provoqué une erreur
           } else if (snapshot.hasError) {
             return Text("error: ${snapshot.error}");
